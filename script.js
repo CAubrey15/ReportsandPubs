@@ -24,21 +24,20 @@ $(document).ready(function () {
     });
   }
 
-  // Run when dropdowns change
+  // ✅ Dropdown filters (auto apply)
   $('#filterType, #filterYear').on('change', applyFilters);
 
-  // Run on search typing
-  $('#searchOperations').on('keyup', applyFilters);
+  // ✅ Live search (instant filtering)
+  $('#searchOperations').on('input', applyFilters);
 
-  // Reset button
-  $('#resetFilters').click(function () {
+  // ✅ Reset button
+  $('#resetFilters').on('click', function () {
     $('#filterType').val('');
     $('#filterYear').val('');
     $('#searchOperations').val('');
     applyFilters();
   });
 
-  // Run on page load
+  // ✅ Initial load
   applyFilters();
-
 });
