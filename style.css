@@ -1,0 +1,149 @@
+.push-down {
+	margin-top: 0;
+}
+
+.dataTables_length,
+.dataTables_info {
+	display: none;
+}
+
+.boxed {
+	border: 2px solid grey;
+	padding: 10px;
+	margin-top: 0;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+#responsiveImage {
+	width: 100%;
+	height: auto;
+	max-width: none;
+	margin-bottom: 0;
+}
+
+/* Search Bar Styles */
+.search-bar-wrapper .form-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-bar-wrapper label {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.search-bar-wrapper .form-control {
+    flex: 1;
+    width: auto;
+    max-width: none;
+}
+
+/* Card Layout Styles */
+.cards-container {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+	width: 100%;
+}
+
+/* GC Design System Card */
+.gcds-card {
+	background-color: #fff;
+	display: block;
+	padding: 20px;
+	height: 100%;
+	color: #000;
+	position: relative;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	overflow: hidden;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.gcds-card:hover {
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	background-color: #f5f5f5;
+}
+
+.gcds-card__header {
+	background-color: #f5f5f5;
+	padding: 15px;
+	border-bottom: 1px solid #ddd;
+}
+
+.gcds-card__title {
+	margin: 0 0 15px 0;
+	font-size: 1.25rem;
+	font-weight: bold;
+	color: #003d82;
+	width: fit-content;
+}
+
+.gcds-card__title a {
+	color: #003d82;
+	text-decoration: none;
+	position: relative;
+	z-index: 2;
+}
+
+.gcds-card__title a:hover {
+	text-decoration: underline;
+}
+
+.gcds-card__content {
+	padding: 15px;
+}
+
+.gcds-card p {
+	margin: 10px 0;
+	color: #333;
+	line-height: 1.6;
+}
+
+.gcds-card strong {
+	color: #333;
+	font-weight: 600;
+}
+
+.gcds-card__footer {
+    padding: 12px 15px;
+    border-top: 1px solid #ddd;
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Hide card when filtered */
+.gcds-card.hidden {
+	display: none;
+}
+
+/* Accessibility focus state */
+.gcds-card:focus-within {
+	box-shadow: 0 0 0 3px #005ea5;
+	outline: none;
+}
+
+.gcds-card a:focus {
+	border: 2px solid #005ea5;
+	box-shadow: none;
+	color: #000;
+	background-color: #e6f2ff;
+	outline: none;
+	text-decoration: underline;
+}
+
+/* Responsive grid for larger screens - keep single column */
+@media (min-width: 768px) {
+	.cards-container {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (min-width: 1200px) {
+	.cards-container {
+		grid-template-columns: 1fr;
+	}
+}
