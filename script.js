@@ -5,13 +5,12 @@ $(document).ready(function () {
     const yearFilter = $('#filterYear').val().toLowerCase();
     const searchTerm = $('#searchOperations').val().toLowerCase();
 
-    $('.data-row').each(function () {
-      const row = $(this);
-      const card = row.find('.operation-card');
+    $('.operation-card').each(function () {
+      const card = $(this);
 
-      const type = (row.data('type') || '').toLowerCase();
-      const year = (row.data('year') || '').toString().toLowerCase();
-      const text = row.text().toLowerCase();
+      const type = (card.closest('.data-row').data('type') || '').toLowerCase();
+      const year = (card.closest('.data-row').data('year') || '').toString().toLowerCase();
+      const text = card.text().toLowerCase();
 
       const typeMatch = typeFilter === '' || type === typeFilter;
       const yearMatch = yearFilter === '' || year === yearFilter;
