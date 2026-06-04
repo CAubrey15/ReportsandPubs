@@ -135,6 +135,20 @@
 	text-decoration: underline;
 }
 
+
+.gcds-badge {
+  display: inline-block;
+  background-color: #d7e5f2;
+  color: #284162;
+  font-size: 0.85em;
+  padding: 4px 8px;
+  margin-bottom: 8px;
+  border-radius: 2px;
+  font-weight: 600;
+  border-left: 4px solid #284162;
+}
+
+
 /* Responsive grid for larger screens - keep single column */
 @media (min-width: 768px) {
 	.cards-container {
