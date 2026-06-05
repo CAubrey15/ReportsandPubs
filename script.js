@@ -1,10 +1,18 @@
 $(document).ready(function () {
+
   let allReports = [];
   const ITEMS_PER_PAGE = 25;
   let currentPage = 1;
   let filteredReports = [];
 
-  // Load JSON data and populate the page
+  // ✅ GC pagination event listener
+  document.addEventListener('gcdsPageChange', function (event) {
+    currentPage = event.detail.page;
+    renderCards(currentPage);
+    window.scrollTo(0, 0);
+  });
+
+  // Load JSON data
   $.ajax({
     url: 'clean_reports.json',
     dataType: 'json',
@@ -18,31 +26,27 @@ $(document).ready(function () {
     }
   });
 
-  // Populate filter dropdowns with unique types and years
+  // Populate filters
   function populateFilters() {
-    // Get unique types
     const types = [...new Set(allReports.map(report => report.type))].sort();
     types.forEach(type => {
       $('#filterType').append(`<option value="${type}">${type}</option>`);
     });
 
-    // Get unique years and sort
     const years = [...new Set(allReports.map(report => report.year))].sort((a, b) => a - b);
-    
-    // Populate year dropdowns
+
     years.forEach(year => {
       $('#filterYearStart').append(`<option value="${year}">${year}</option>`);
       $('#filterYearEnd').append(`<option value="${year}">${year}</option>`);
     });
 
-    // Set default values
     if (years.length > 0) {
       $('#filterYearStart').val(years[0]);
       $('#filterYearEnd').val(years[years.length - 1]);
     }
   }
 
-  // Render paginated cards
+  // Render cards
   function renderCards(page = 1) {
     const container = $('.cards-container');
     container.empty();
@@ -83,61 +87,31 @@ $(document).ready(function () {
     renderPagination();
   }
 
-  // Render pagination controls
+  // ✅ GC pagination (replacement)
   function renderPagination() {
     const totalPages = Math.ceil(filteredReports.length / ITEMS_PER_PAGE);
-    const paginationContainer = $('#pagination-controls');
-    
-    if (!paginationContainer.length) {
-      $('.cards-container').after('<div id="pagination-controls" class="pagination-controls"></div>');
-    }
-    
-    const pagination = $('#pagination-controls');
-    pagination.empty();
+
+    const paginationEl = document.getElementById('gcds-pagination');
+    if (!paginationEl) return;
 
     if (totalPages <= 1) {
+      paginationEl.style.display = 'none';
       return;
     }
 
-    let paginationHTML = '<nav aria-label="Pagination"><ul class="pagination">';
+    paginationEl.style.display = 'block';
 
-    // Previous button
-    if (currentPage > 1) {
-      paginationHTML += `<li><button class="page-link" data-page="${currentPage - 1}">Previous</button></li>`;
-    }
-
-    // Page numbers
-    for (let i = 1; i <= totalPages; i++) {
-      if (i === currentPage) {
-        paginationHTML += `<li><button class="page-link active" data-page="${i}">${i}</button></li>`;
-      } else {
-        paginationHTML += `<li><button class="page-link" data-page="${i}">${i}</button></li>`;
-      }
-    }
-
-    // Next button
-    if (currentPage < totalPages) {
-      paginationHTML += `<li><button class="page-link" data-page="${currentPage + 1}">Next</button></li>`;
-    }
-
-    paginationHTML += '</ul></nav>';
-    pagination.html(paginationHTML);
-
-    // Attach click handlers
-    $('.page-link').on('click', function() {
-      currentPage = $(this).data('page');
-      renderCards(currentPage);
-      window.scrollTo(0, 0);
-    });
+    paginationEl.setAttribute('total-pages', totalPages);
+    paginationEl.setAttribute('current-page', currentPage);
   }
 
+  // Apply filters
   function applyFilters() {
     const typeFilter = $('#filterType').val();
     const yearStart = $('#filterYearStart').val();
     const yearEnd = $('#filterYearEnd').val();
     const searchTerm = $('#searchOperations').val().toLowerCase();
 
-    // Set default values if empty
     const startYear = yearStart ? parseInt(yearStart) : 2002;
     const endYear = yearEnd ? parseInt(yearEnd) : 2026;
 
@@ -158,7 +132,6 @@ $(document).ready(function () {
 
   $('#resetFilters').on('click', function () {
     $('#filterType').val('');
-    // Reset to first and last year
     const firstOption = $('#filterYearStart option:first').val();
     const lastOption = $('#filterYearEnd option:last').val();
     $('#filterYearStart').val(firstOption);
@@ -166,4 +139,5 @@ $(document).ready(function () {
     $('#searchOperations').val('');
     applyFilters();
   });
+
 });
