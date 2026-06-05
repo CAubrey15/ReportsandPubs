@@ -133,3 +133,52 @@
 .operation-card.hidden {
     display: none;
 }
+
+/* Pagination styles */
+.pagination-controls {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.pagination {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.pagination li {
+    margin: 0;
+    padding: 0;
+}
+
+.page-link {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #003d82;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+}
+
+.page-link.active {
+    background-color: #003d82;
+    color: #fff;
+    border-color: #003d82;
+}
+
+.page-link:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
