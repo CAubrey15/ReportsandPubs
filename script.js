@@ -1,5 +1,8 @@
 $(document).ready(function () {
   let allReports = [];
+  const ITEMS_PER_PAGE = 25;
+  let currentPage = 1;
+  let filteredReports = [];
 
   // Load JSON data and populate the page
   $.ajax({
@@ -8,7 +11,6 @@ $(document).ready(function () {
     success: function(data) {
       allReports = data;
       populateFilters();
-      renderCards();
       applyFilters();
     },
     error: function() {
@@ -40,39 +42,97 @@ $(document).ready(function () {
     }
   }
 
-  // Render all cards from JSON data
-  function renderCards() {
+  // Render paginated cards
+  function renderCards(page = 1) {
     const container = $('.cards-container');
     container.empty();
 
-    allReports.forEach(report => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const paginatedReports = filteredReports.slice(startIndex, endIndex);
+
+    if (paginatedReports.length === 0) {
+      container.append('<p>No reports found.</p>');
+      renderPagination();
+      return;
+    }
+
+    paginatedReports.forEach(report => {
       const card = `
-        <div class="data-row" data-type="${report.type}" data-year="${report.year}">
-          <div class="operation-card">
-            <div class="card-header">
-              <h3 class="card-title">
-                <a href="${report.link}">
-                  ${report.title}
-                </a>
-              </h3>
-            </div>
-            <div class="card-content">
-              <div class="card-field">
-                <strong>Type:</strong>
-                <p>${report.type}</p>
-                <strong>Date of publication:</strong>
-                <p>${report.year}</p>
-              </div>
+        <div class="operation-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <a href="${report.link}">
+                ${report.title}
+              </a>
+            </h3>
+          </div>
+          <div class="card-content">
+            <div class="card-field">
+              <strong>Type:</strong>
+              <p>${report.type}</p>
+              <strong>Date of publication:</strong>
+              <p>${report.year}</p>
             </div>
           </div>
         </div>
       `;
       container.append(card);
     });
+
+    renderPagination();
+  }
+
+  // Render pagination controls
+  function renderPagination() {
+    const totalPages = Math.ceil(filteredReports.length / ITEMS_PER_PAGE);
+    const paginationContainer = $('#pagination-controls');
+    
+    if (!paginationContainer.length) {
+      $('.cards-container').after('<div id="pagination-controls" class="pagination-controls"></div>');
+    }
+    
+    const pagination = $('#pagination-controls');
+    pagination.empty();
+
+    if (totalPages <= 1) {
+      return;
+    }
+
+    let paginationHTML = '<nav aria-label="Pagination"><ul class="pagination">';
+
+    // Previous button
+    if (currentPage > 1) {
+      paginationHTML += `<li><button class="page-link" data-page="${currentPage - 1}">Previous</button></li>`;
+    }
+
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === currentPage) {
+        paginationHTML += `<li><button class="page-link active" data-page="${i}">${i}</button></li>`;
+      } else {
+        paginationHTML += `<li><button class="page-link" data-page="${i}">${i}</button></li>`;
+      }
+    }
+
+    // Next button
+    if (currentPage < totalPages) {
+      paginationHTML += `<li><button class="page-link" data-page="${currentPage + 1}">Next</button></li>`;
+    }
+
+    paginationHTML += '</ul></nav>';
+    pagination.html(paginationHTML);
+
+    // Attach click handlers
+    $('.page-link').on('click', function() {
+      currentPage = $(this).data('page');
+      renderCards(currentPage);
+      window.scrollTo(0, 0);
+    });
   }
 
   function applyFilters() {
-    const typeFilter = $('#filterType').val().toLowerCase();
+    const typeFilter = $('#filterType').val();
     const yearStart = $('#filterYearStart').val();
     const yearEnd = $('#filterYearEnd').val();
     const searchTerm = $('#searchOperations').val().toLowerCase();
@@ -81,23 +141,16 @@ $(document).ready(function () {
     const startYear = yearStart ? parseInt(yearStart) : 2002;
     const endYear = yearEnd ? parseInt(yearEnd) : 2026;
 
-    $('.operation-card').each(function () {
-      const card = $(this);
+    filteredReports = allReports.filter(report => {
+      const typeMatch = typeFilter === '' || report.type === typeFilter;
+      const yearMatch = report.year >= startYear && report.year <= endYear;
+      const searchMatch = searchTerm === '' || report.title.toLowerCase().includes(searchTerm);
 
-      const type = (card.closest('.data-row').data('type') || '').toLowerCase();
-      const year = parseInt(card.closest('.data-row').data('year') || 0);
-      const text = card.text().toLowerCase();
-
-      const typeMatch = typeFilter === '' || type === typeFilter;
-      const yearMatch = year >= startYear && year <= endYear;
-      const searchMatch = searchTerm === '' || text.includes(searchTerm);
-
-      if (typeMatch && yearMatch && searchMatch) {
-        card.removeClass('hidden');
-      } else {
-        card.addClass('hidden');
-      }
+      return typeMatch && yearMatch && searchMatch;
     });
+
+    currentPage = 1;
+    renderCards(currentPage);
   }
 
   $('#filterType, #filterYearStart, #filterYearEnd').on('change', applyFilters);
