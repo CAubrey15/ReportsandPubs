@@ -1,16 +1,21 @@
 $(document).ready(function () {
 
   let allReports = [];
-  const ITEMS_PER_PAGE = 25;
+  const ITEMS_PER_PAGE = 10;
   let currentPage = 1;
   let filteredReports = [];
 
-  // ✅ GC pagination event listener
-  document.addEventListener('gcdsPageChange', function (event) {
-    currentPage = event.detail.page;
-    renderCards(currentPage);
-    window.scrollTo(0, 0);
-  });
+  // ✅ GC pagination event listener - wait for component to be ready
+  setTimeout(function() {
+    const paginationEl = document.getElementById('gcds-pagination');
+    if (paginationEl) {
+      paginationEl.addEventListener('gcdsPageChange', function (event) {
+        currentPage = event.detail.page;
+        renderCards(currentPage);
+        window.scrollTo(0, 0);
+      });
+    }
+  }, 100);
 
   // Load JSON data
   $.ajax({
@@ -101,6 +106,7 @@ $(document).ready(function () {
 
     paginationEl.style.display = 'block';
 
+    // Update pagination attributes
     paginationEl.setAttribute('total-pages', totalPages);
     paginationEl.setAttribute('current-page', currentPage);
   }
