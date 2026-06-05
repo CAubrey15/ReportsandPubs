@@ -151,12 +151,8 @@
     flex-wrap: wrap;
 }
 
-.pagination li {
-    margin: 0;
-    padding: 0;
-}
-
-.page-link {
+/* Buttons */
+.page-btn {
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -165,20 +161,22 @@
     cursor: pointer;
     font-size: 0.95rem;
     transition: all 0.3s ease;
+    outline: none;
+    font-family: inherit;
 }
 
-.page-link:hover {
+.page-btn:hover {
     background-color: #f0f0f0;
     border-color: #999;
 }
 
-.page-link.active {
+.page-btn.active {
     background-color: #003d82;
     color: #fff;
     border-color: #003d82;
 }
 
-.page-link:disabled {
+.page-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }

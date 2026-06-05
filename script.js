@@ -5,17 +5,6 @@ $(document).ready(function () {
   let currentPage = 1;
   let filteredReports = [];
 
-  // ✅ GC pagination event listener - wait for component to be ready
-  setTimeout(function() {
-    const paginationEl = document.getElementById('gcds-pagination');
-    if (paginationEl) {
-      paginationEl.addEventListener('gcdsPageChange', function (event) {
-        currentPage = event.detail.page;
-        renderCards(currentPage);
-        window.scrollTo(0, 0);
-      });
-    }
-  }, 100);
 
   // Load JSON data
   $.ajax({
@@ -92,24 +81,45 @@ $(document).ready(function () {
     renderPagination();
   }
 
-  // ✅ GC pagination (replacement)
-  function renderPagination() {
-    const totalPages = Math.ceil(filteredReports.length / ITEMS_PER_PAGE);
+function renderPagination() {
+  const totalPages = Math.ceil(filteredReports.length / ITEMS_PER_PAGE);
+  const container = $('#pagination');
+  container.empty();
 
-    const paginationEl = document.getElementById('gcds-pagination');
-    if (!paginationEl) return;
+  if (totalPages <= 1) return;
 
-    if (totalPages <= 1) {
-      paginationEl.style.display = 'none';
-      return;
+  function pageBtn(label, page, disabled = false, active = false) {
+    const btn = $(`
+      <button class="page-btn ${active ? 'active' : ''}" ${disabled ? 'disabled' : ''}>
+        ${label}
+      </button>
+    `);
+
+    if (!disabled && !active) {
+      btn.on('click', function () {
+        currentPage = page;
+        renderCards(currentPage);
+        window.scrollTo(0, 0);
+      });
     }
 
-    paginationEl.style.display = 'block';
-
-    // Update pagination attributes
-    paginationEl.setAttribute('total-pages', totalPages);
-    paginationEl.setAttribute('current-page', currentPage);
+    container.append(btn);
   }
+
+  // Previous
+  pageBtn('Previous', currentPage - 1, currentPage === 1);
+
+  // Current ± 2 pages
+  for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+    if (i >= 1 && i <= totalPages) {
+      pageBtn(i, i, false, i === currentPage);
+    }
+  }
+
+  // Next
+  pageBtn('Next', currentPage + 1, currentPage === totalPages);
+}
+
 
   // Apply filters
   function applyFilters() {
