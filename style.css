@@ -18,6 +18,34 @@
     max-width: none;
 }
 
+.year-range-container {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.year-input-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.year-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.year-select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    background-color: #fff;
+}
+
 .cards-container {
     display: grid;
     grid-template-columns: 1fr;
