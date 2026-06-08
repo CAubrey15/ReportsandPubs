@@ -93,7 +93,8 @@
 
 .card-field {
     display: grid;
-    grid-template-columns: 180px 1fr 180px 1fr;
+
+    grid-template-columns: 180px 1fr; 
     gap: 6px 16px;
     margin-bottom: 12px;
 }
@@ -101,6 +102,7 @@
 .card-field:last-child {
     margin-bottom: 0;
 }
+
 
 .card-field strong:nth-of-type(odd) {
     grid-column: 1;
@@ -110,13 +112,15 @@
     grid-column: 2;
 }
 
+
 .card-field strong:nth-of-type(even) {
-    grid-column: 3;
+    grid-column: 1;
 }
 
 .card-field p:nth-of-type(even) {
-    grid-column: 4;
+    grid-column: 2;
 }
+
 .operation-card.hidden {
     display: none;
 }
