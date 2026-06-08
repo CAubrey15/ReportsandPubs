@@ -93,7 +93,7 @@
 
 .card-field {
     display: grid;
-    grid-template-columns: 180px 1fr;
+    grid-template-columns: 180px 1fr 180px 1fr;
     gap: 6px 16px;
     margin-bottom: 12px;
 }
@@ -102,19 +102,21 @@
     margin-bottom: 0;
 }
 
-
-.card-field strong {
-    margin: 0;
-    color: #333;
-    font-weight: 600;
+.card-field strong:nth-of-type(odd) {
+    grid-column: 1;
 }
 
-.card-field p {
-    margin: 0;
-    color: #666;
-    line-height: 1.6;
+.card-field p:nth-of-type(odd) {
+    grid-column: 2;
 }
 
+.card-field strong:nth-of-type(even) {
+    grid-column: 3;
+}
+
+.card-field p:nth-of-type(even) {
+    grid-column: 4;
+}
 .operation-card.hidden {
     display: none;
 }
