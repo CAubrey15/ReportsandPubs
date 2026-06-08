@@ -93,7 +93,6 @@
 
 .card-field {
     display: grid;
-
     grid-template-columns: 180px 1fr;
     gap: 6px 16px;
     margin-bottom: 12px;
@@ -104,16 +103,6 @@
 }
 
 
-.card-field strong:nth-of-type(even),
-.card-field strong:nth-of-type(even) {
-    grid-column: 1;
-}
-
-
-.card-field p:nth-of-type(odd),
-.card-field p:nth-of-type(odd) {
-    grid-column: 2;
-}
 .card-field strong {
     margin: 0;
     color: #333;
