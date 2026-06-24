@@ -1,10 +1,9 @@
 $(document).ready(function () {
 
   let allReports = [];
-  const ITEMS_PER_PAGE = 10;
+  let itemsPerPage = 10;
   let currentPage = 1;
   let filteredReports = [];
-
 
   // Load JSON data
   $.ajax({
@@ -45,9 +44,14 @@ $(document).ready(function () {
     const container = $('.cards-container');
     container.empty();
 
-    const startIndex = (page - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    const paginatedReports = filteredReports.slice(startIndex, endIndex);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = itemsPerPage === 0 
+      ? filteredReports.length 
+      : startIndex + itemsPerPage;
+
+    const paginatedReports = itemsPerPage === 0
+      ? filteredReports
+      : filteredReports.slice(startIndex, endIndex);
 
     if (paginatedReports.length === 0) {
       container.append('<p>No reports found.</p>');
@@ -81,45 +85,48 @@ $(document).ready(function () {
     renderPagination();
   }
 
-function renderPagination() {
-  const totalPages = Math.ceil(filteredReports.length / ITEMS_PER_PAGE);
-  const container = $('#pagination');
-  container.empty();
+  // Pagination
+  function renderPagination() {
+    const container = $('#pagination');
+    container.empty();
 
-  if (totalPages <= 1) return;
+    const totalPages = itemsPerPage === 0 
+      ? 1 
+      : Math.ceil(filteredReports.length / itemsPerPage);
 
-  function pageBtn(label, page, disabled = false, active = false) {
-    const btn = $(`
-      <button class="page-btn ${active ? 'active' : ''}" ${disabled ? 'disabled' : ''}>
-        ${label}
-      </button>
-    `);
+    if (totalPages <= 1) return;
 
-    if (!disabled && !active) {
-      btn.on('click', function () {
-        currentPage = page;
-        renderCards(currentPage);
-        window.scrollTo(0, 0);
-      });
+    function pageBtn(label, page, disabled = false, active = false) {
+      const btn = $(`
+        <button class="page-btn ${active ? 'active' : ''}" ${disabled ? 'disabled' : ''}>
+          ${label}
+        </button>
+      `);
+
+      if (!disabled && !active) {
+        btn.on('click', function () {
+          currentPage = page;
+          renderCards(currentPage);
+          window.scrollTo(0, 0);
+        });
+      }
+
+      container.append(btn);
     }
 
-    container.append(btn);
-  }
+    // Previous
+    pageBtn('Previous', currentPage - 1, currentPage === 1);
 
-  // Previous
-  pageBtn('Previous', currentPage - 1, currentPage === 1);
-
-  // Current ± 2 pages
-  for (let i = currentPage - 2; i <= currentPage + 2; i++) {
-    if (i >= 1 && i <= totalPages) {
-      pageBtn(i, i, false, i === currentPage);
+    // Pages
+    for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+      if (i >= 1 && i <= totalPages) {
+        pageBtn(i, i, false, i === currentPage);
+      }
     }
+
+    // Next
+    pageBtn('Next', currentPage + 1, currentPage === totalPages);
   }
-
-  // Next
-  pageBtn('Next', currentPage + 1, currentPage === totalPages);
-}
-
 
   // Apply filters
   function applyFilters() {
@@ -143,8 +150,15 @@ function renderPagination() {
     renderCards(currentPage);
   }
 
+  // Event listeners
   $('#filterType, #filterYearStart, #filterYearEnd').on('change', applyFilters);
   $('#searchOperations').on('input', applyFilters);
+
+  $('#pageSize').on('change', function () {
+    itemsPerPage = parseInt($(this).val());
+    currentPage = 1;
+    renderCards(currentPage);
+  });
 
   $('#resetFilters').on('click', function () {
     $('#filterType').val('');
