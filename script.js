@@ -96,37 +96,33 @@ $(document).ready(function () {
 
     if (totalPages <= 1) return;
 
-    function pageBtn(label, page, disabled = false, active = false) {
-      const btn = $(`
-        <button class="page-btn ${active ? 'active' : ''}" ${disabled ? 'disabled' : ''}>
-          ${label}
-        </button>
-      `);
-
-      if (!disabled && !active) {
-        btn.on('click', function () {
-          currentPage = page;
-          renderCards(currentPage);
-          window.scrollTo(0, 0);
-        });
-      }
-
-      container.append(btn);
-    }
-
     // Previous
-    pageBtn('Previous', currentPage - 1, currentPage === 1);
+    const prevBtn = $(`<button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>`);
+    container.append(prevBtn);
 
-    // Pages
+    // Current ± 2 pages
     for (let i = currentPage - 2; i <= currentPage + 2; i++) {
       if (i >= 1 && i <= totalPages) {
-        pageBtn(i, i, false, i === currentPage);
+        const isActive = i === currentPage;
+        const pageBtn = $(`<button class="page-btn ${isActive ? 'active' : ''}" data-page="${i}" ${isActive ? 'disabled' : ''}>${i}</button>`);
+        container.append(pageBtn);
       }
     }
 
     // Next
-    pageBtn('Next', currentPage + 1, currentPage === totalPages);
+    const nextBtn = $(`<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`);
+    container.append(nextBtn);
   }
+
+  // Event delegation for pagination buttons
+  $(document).on('click', '.page-btn:not(:disabled)', function () {
+    const page = parseInt($(this).data('page'));
+    if (page >= 1) {
+      currentPage = page;
+      renderCards(currentPage);
+      window.scrollTo(0, 0);
+    }
+  });
 
   // Apply filters
   function applyFilters() {
@@ -135,7 +131,7 @@ $(document).ready(function () {
     const yearEnd = $('#filterYearEnd').val();
     const searchTerm = $('#searchOperations').val().toLowerCase();
 
-    const startYear = yearStart ? parseInt(yearStart) : 2002;
+    const startYear = yearStart ? parseInt(yearYear) : 2002;
     const endYear = yearEnd ? parseInt(yearEnd) : 2026;
 
     filteredReports = allReports.filter(report => {
