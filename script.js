@@ -131,7 +131,7 @@ $(document).ready(function () {
     const yearEnd = $('#filterYearEnd').val();
     const searchTerm = $('#searchOperations').val().toLowerCase();
 
-    const startYear = yearStart ? parseInt(yearYear) : 2002;
+    const startYear = yearStart ? parseInt(yearStart) : 2002;
     const endYear = yearEnd ? parseInt(yearEnd) : 2026;
 
     filteredReports = allReports.filter(report => {
