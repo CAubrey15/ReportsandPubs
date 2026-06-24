@@ -21,7 +21,10 @@ $(document).ready(function () {
 
   // Populate filters
   function populateFilters() {
-    const types = [...new Set(allReports.map(report => report.type))].sort();
+    // Normalize types by trimming to avoid mismatches from extra whitespace
+    const types = [...new Set(allReports.map(report => (report.type || '').trim()))]
+      .filter(Boolean)
+      .sort();
     types.forEach(type => {
       $('#filterType').append(`<option value="${type}">${type}</option>`);
     });
@@ -126,7 +129,8 @@ $(document).ready(function () {
 
   // Apply filters
   function applyFilters() {
-    const typeFilter = $('#filterType').val();
+    const rawTypeFilter = $('#filterType').val();
+    const typeFilter = rawTypeFilter ? rawTypeFilter.trim() : '';
     const yearStart = $('#filterYearStart').val();
     const yearEnd = $('#filterYearEnd').val();
     const searchTerm = $('#searchOperations').val().toLowerCase();
@@ -135,7 +139,8 @@ $(document).ready(function () {
     const endYear = yearEnd ? parseInt(yearEnd) : 2026;
 
     filteredReports = allReports.filter(report => {
-      const typeMatch = typeFilter === '' || report.type === typeFilter;
+      const reportType = (report.type || '').trim();
+      const typeMatch = typeFilter === '' || reportType === typeFilter;
       const yearMatch = report.year >= startYear && report.year <= endYear;
       const searchMatch = searchTerm === '' || report.title.toLowerCase().includes(searchTerm);
 
